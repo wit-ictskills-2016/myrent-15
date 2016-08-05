@@ -91,6 +91,10 @@ public class Residence
 
   }
 
+  /**
+   * Generate a long greater than zero
+   * @return Unsigned Long value greater than zero
+   */
   private Long unsignedLong() {
     long rndVal = 0;
     do {

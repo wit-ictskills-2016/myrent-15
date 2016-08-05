@@ -8,6 +8,8 @@ import org.wit.myrent.app.MyRentApp;
 import org.wit.myrent.models.Portfolio;
 import org.wit.myrent.models.Residence;
 
+import android.view.ActionMode;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,12 +28,15 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ResidenceListFragment extends ListFragment implements OnItemClickListener
+public class ResidenceListFragment extends ListFragment implements OnItemClickListener,
+    AbsListView.MultiChoiceModeListener
 {
   private ArrayList<Residence> residences;
   private Portfolio portfolio;
   private ResidenceAdapter adapter;
   MyRentApp app;
+  private ListView listView;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -50,6 +55,11 @@ public class ResidenceListFragment extends ListFragment implements OnItemClickLi
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
     View v = super.onCreateView(inflater, parent, savedInstanceState);
+
+    listView = (ListView) v.findViewById(android.R.id.list);
+    listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+    listView.setMultiChoiceModeListener(this);
+
     return v;
   }
 
@@ -95,6 +105,56 @@ public class ResidenceListFragment extends ListFragment implements OnItemClickLi
     Residence residence = adapter.getItem(position);
     IntentHelper.startActivityWithData(getActivity(), ResidenceActivity.class, "RESIDENCE_ID", residence.id);
   }
+
+  @Override
+  public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
+
+  }
+  /* ************ MultiChoiceModeListener methods (begin) *********** */
+  @Override
+  public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+    MenuInflater inflater = actionMode.getMenuInflater();
+    inflater.inflate(R.menu.residence_list_context, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+    return false;
+  }
+
+  @Override
+  public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem)
+  {
+    switch (menuItem.getItemId())
+    {
+      case R.id.menu_item_delete_residence:
+        deleteResidence(actionMode);
+        return true;
+      default:
+        return false;
+    }
+
+  }
+
+  private void deleteResidence(ActionMode actionMode)
+  {
+    for (int i = adapter.getCount() - 1; i >= 0; i--)
+    {
+      if (listView.isItemChecked(i))
+      {
+        portfolio.deleteResidence(adapter.getItem(i));
+      }
+    }
+    actionMode.finish();
+    adapter.notifyDataSetChanged();
+  }
+
+  @Override
+  public void onDestroyActionMode(ActionMode actionMode) {
+
+  }
+  /* ************ Residence Adapter *********** */
 
   class ResidenceAdapter extends ArrayAdapter<Residence>
   {

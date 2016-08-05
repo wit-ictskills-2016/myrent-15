@@ -21,4 +21,6 @@
   <string name="residence_report_subject">Status Report on Residence Availability</string>
   <string name="send_report">Send residence report via</string>
 
+  <string name="delete_residence">Delete Residence</string>
+
 </resources>
