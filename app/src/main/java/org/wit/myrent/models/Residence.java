@@ -1,5 +1,6 @@
-package org.wit.myrent;
+package org.wit.myrent.models;
 
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -7,15 +8,18 @@ import java.util.Random;
  */
 public class Residence
 {
-  private Long id;
+  public Long id;
+  public Long date;
 
   //a latitude longitude pair
   //example "52.4566,-6.5444"
   private String geolocation;
+  public boolean rented;
 
   public Residence()
   {
     id = new Random().nextLong();
+    date = new Date().getTime();
   }
 
   public void setGeolocation(String geolocation)
@@ -27,4 +31,14 @@ public class Residence
   {
     return geolocation;
   }
+
+  public String getDateString() {
+    return "Registered:" + dateString();
+  }
+
+  private String dateString() {
+    String dateFormat = "EEE d MMM yyyy H:mm";
+    return android.text.format.DateFormat.format(dateFormat, date).toString();
+  }
+
 }

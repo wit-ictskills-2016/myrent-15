@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" >
+
+  <!-- LOCATION -->
+
+  <TextView
+      style="?android:listSeparatorTextViewStyle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/location" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:baselineAligned="false"
+      android:orientation="horizontal" >
+
+    <!-- Geolocation (GPS Coords) -->
+
+    <EditText
+        android:id="@+id/geolocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/geolocation_hint" >
+
+      <requestFocus />
+    </EditText>
+
+  </LinearLayout>
+
+  <!-- STATUS -->
+
+  <TextView
+      style="?android:listSeparatorTextViewStyle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/status" />
+
+  <Button android:id="@+id/registration_date"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="16dp"
+          android:layout_marginRight="16dp"
+      />
+  <!-- Checkbox -->
+  <CheckBox
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/isrented"
+      android:id="@+id/isrented"
+      android:checked="false"/>
+
+</LinearLayout>
