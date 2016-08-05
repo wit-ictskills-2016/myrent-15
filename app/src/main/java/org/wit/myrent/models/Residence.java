@@ -13,7 +13,7 @@ public class Residence
 
   //a latitude longitude pair
   //example "52.4566,-6.5444"
-  private String geolocation;
+  public String geolocation;
   public boolean rented;
 
   public Residence()
