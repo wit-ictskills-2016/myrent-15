@@ -1,6 +1,7 @@
 package org.wit.myrent.models;
 
 import android.content.Context;
+
 import org.wit.myrent.R;
 
 import org.json.JSONException;
@@ -28,7 +29,7 @@ public class Residence
   private static final String JSON_TENANT = "tenant";
 
   public Residence() {
-    id = new Random().nextLong();
+    id = unsignedLong();
     date = new Date().getTime();
     geolocation = "52.253456,-7.187162";
     tenant = "none presently";
@@ -90,4 +91,11 @@ public class Residence
 
   }
 
+  private Long unsignedLong() {
+    long rndVal = 0;
+    do {
+      rndVal = new Random().nextLong();
+    } while (rndVal <= 0);
+    return rndVal;
+  }
 }

@@ -56,7 +56,6 @@ public class Portfolio
         return res;
       }
     }
-    info(this, "failed to find residence. returning first element array to avoid crash");
     return null;
   }
 
