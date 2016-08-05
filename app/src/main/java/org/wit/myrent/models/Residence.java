@@ -20,6 +20,7 @@ public class Residence
   {
     id = new Random().nextLong();
     date = new Date().getTime();
+    geolocation = "52.253456,-7.187162";
   }
 
   public void setGeolocation(String geolocation)

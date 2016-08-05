@@ -1,7 +1,8 @@
 package org.wit.myrent.models;
 import java.util.ArrayList;
 
-import android.util.Log;
+
+import static org.wit.android.helpers.LogHelpers.info;
 
 public class Portfolio
 {
@@ -9,7 +10,6 @@ public class Portfolio
 
   public Portfolio() {
     residences = new ArrayList<Residence>();
-    this.generateTestData();
   }
 
   public void addResidence(Residence residence) {
@@ -17,7 +17,7 @@ public class Portfolio
   }
 
   public Residence getResidence(Long id) {
-    Log.i(this.getClass().getSimpleName(), "Long parameter id: " + id);
+   info(this, "Long parameter id: " + id);
 
     for (Residence res : residences) {
       if (id.equals(res.id)) {
@@ -27,17 +27,4 @@ public class Portfolio
     return null;
   }
 
-  private void generateTestData() {
-    for (int i = 0; i < 100; i += 1) {
-      Residence r = new Residence();
-      r.geolocation = (52.253456 + i) % 90 + ", " + (-7.187162 - i) % 180 + "";
-      if (i % 2 == 0) {
-        r.rented = true;
-      }
-      else {
-        r.rented = false;
-      }
-      residences.add(r);
-    }
-  }
 }

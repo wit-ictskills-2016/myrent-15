@@ -4,9 +4,12 @@ import org.wit.myrent.R;
 import org.wit.myrent.app.MyRentApp;
 import org.wit.myrent.models.Portfolio;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.app.Activity;
 import android.os.Bundle;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -18,7 +21,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import org.wit.myrent.models.Residence;
 
-public class ResidenceListActivity extends Activity implements AdapterView.OnItemClickListener
+import static org.wit.android.helpers.IntentHelper.startActivityWithData;
+import static org.wit.android.helpers.IntentHelper.startActivityWithDataForResult;
+
+public class ResidenceListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
   private ListView listView;
   private Portfolio portfolio;
@@ -45,15 +51,35 @@ public class ResidenceListActivity extends Activity implements AdapterView.OnIte
   @Override
   public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
     Residence residence = adapter.getItem(position);
-    Intent intent = new Intent(this, ResidenceActivity.class);
-    intent.putExtra("RESIDENCE_ID", residence.id);
-    startActivity(intent);
+    startActivityWithData(this, ResidenceActivity.class, "RESIDENCE_ID", residence.id);
   }
 
   @Override
   public void onResume() {
     super.onResume();
     adapter.notifyDataSetChanged();
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu)
+  {
+    MenuInflater menuInflater = getMenuInflater();
+    menuInflater.inflate(R.menu.residencelist, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item)
+  {
+    switch (item.getItemId())
+    {
+      case R.id.menu_item_new_residence: Residence residence = new Residence();
+        portfolio.addResidence(residence);
+        startActivityWithDataForResult(this, ResidenceActivity.class, "RESIDENCE_ID", residence.id, 0);
+        return true;
+
+      default: return super.onOptionsItemSelected(item);
+    }
   }
 }
 
