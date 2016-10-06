@@ -33,6 +33,7 @@ import android.widget.EditText;
 
 import static org.wit.android.helpers.ContactHelper.sendEmail;
 import static org.wit.android.helpers.IntentHelper.navigateUp;
+import static org.wit.android.helpers.IntentHelper.selectContact;
 
 
 public class ResidenceFragment extends Fragment implements TextWatcher,
@@ -52,6 +53,8 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
 
   private Residence residence;
   private Portfolio portfolio;
+
+  private String emailAddress;
 
   MyRentApp app;
 
@@ -121,15 +124,22 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     portfolio.saveResidences();
   }
 
+
   @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+  public void onActivityResult(int requestCode, int resultCode, Intent data)
+  {
     if (resultCode != Activity.RESULT_OK) {
       return;
     }
-    else if (requestCode == REQUEST_CONTACT) {
-      String name = ContactHelper.getContact(getActivity(), data);
-      residence.tenant = name;
-      tenantButton.setText(name);
+
+    switch (requestCode)
+    {
+      case REQUEST_CONTACT:
+        String name = ContactHelper.getContact(getActivity(), data);
+        emailAddress = ContactHelper.getEmail(getActivity(), data);
+        tenantButton.setText(name + " : " + emailAddress);
+        residence.tenant = name;
+        break;
     }
   }
 
@@ -153,22 +163,22 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   }
 
   @Override
-  public void onClick(View v) {
-    switch (v.getId()) {
-      case R.id.registration_date:
-        Calendar c = Calendar.getInstance();
-        DatePickerDialog dpd = new DatePickerDialog(getActivity(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+  public void onClick(View v)
+  {
+    switch (v.getId())
+    {
+      case R.id.registration_date      : Calendar c = Calendar.getInstance();
+        DatePickerDialog dpd = new DatePickerDialog (getActivity(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         dpd.show();
         break;
-      case R.id.tenant:
-        Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(i, REQUEST_CONTACT);
-        if (residence.tenant != null) {
-          tenantButton.setText("Tenant: " + residence.tenant);
-        }
+
+      case R.id.tenant :
+        selectContact(getActivity(), REQUEST_CONTACT);
         break;
-      case R.id.residence_reportButton:
-        sendEmail(getActivity(), "", getString(R.string.residence_report_subject), residence.getResidenceReport(getActivity()));
+
+      case R.id.residence_reportButton :
+        if(emailAddress == null) emailAddress = ""; // guard against null pointer
+        sendEmail(getActivity(), emailAddress, getString(R.string.residence_report_subject), residence.getResidenceReport(getActivity()));
         break;
 
     }
