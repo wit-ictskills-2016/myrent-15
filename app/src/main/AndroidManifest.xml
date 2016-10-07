@@ -23,6 +23,7 @@
 
     <activity
         android:name=".activities.ResidencePagerActivity"
+        android:windowSoftInputMode="stateHidden|adjustResize"
         android:label="@string/app_name" >
       <meta-data android:name="android.support.PARENT_ACTIVITY"
                  android:value=".activities.ResidenceListActivity"/>
@@ -38,6 +39,7 @@
 
     <activity
         android:name=".activities.MapActivity"
+        android:windowSoftInputMode="stateHidden|adjustResize"
         android:label="@string/app_name">
       <meta-data android:name="android.support.PARENT_ACTIVITY"
                  android:value=".activities.ResidencePagerActivity"/>
