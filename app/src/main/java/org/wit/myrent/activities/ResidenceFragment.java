@@ -184,8 +184,9 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
         sendEmail(getActivity(), emailAddress, getString(R.string.residence_report_subject), residence.getResidenceReport(getActivity()));
         break;
 
-      case R.id.fab :
-        IntentHelper.openPreferredLocationInMap(getActivity(), residence.geolocation);
+      case R.id.fab:
+        Intent mapIntent = new Intent(getActivity(), MapActivity.class);
+        startActivity(mapIntent);
         break;
     }
   }
