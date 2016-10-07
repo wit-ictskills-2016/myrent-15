@@ -23,4 +23,13 @@
 
   <string name="delete_residence">Delete Residence</string>
 
+  <string name="username_summary">Please enter your user name</string>
+  <string name="username">Username</string>
+  <string name="password_summary">You may set your password here</string>
+  <string name="password">Password</string>
+  <string name="nmr_residences">Configure Downloads</string>
+  <string name="nmr_residences_summary">How many Residences to store locally?</string>
+  <string name="set_refresh_interval">Refresh</string>
+  <string name="set_refresh_interval_summary">Frequency of cloud updates (minutes)</string>
+
 </resources>

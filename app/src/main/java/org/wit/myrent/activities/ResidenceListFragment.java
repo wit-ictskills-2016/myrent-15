@@ -7,6 +7,7 @@ import org.wit.myrent.R;
 import org.wit.myrent.app.MyRentApp;
 import org.wit.myrent.models.Portfolio;
 import org.wit.myrent.models.Residence;
+import org.wit.myrent.settings.SettingsActivity;
 
 import android.view.ActionMode;
 import android.widget.AbsListView;
@@ -93,6 +94,10 @@ public class ResidenceListFragment extends ListFragment implements OnItemClickLi
         Intent i = new Intent(getActivity(), ResidencePagerActivity.class);
         i.putExtra(ResidenceFragment.EXTRA_RESIDENCE_ID, residence.id);
         startActivityForResult(i, 0);
+        return true;
+
+      case R.id.action_settings:
+        startActivity(new Intent(getActivity(), SettingsActivity.class));
         return true;
 
       default:
