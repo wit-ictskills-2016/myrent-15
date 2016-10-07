@@ -12,8 +12,6 @@ import org.wit.myrent.settings.SettingsFragment;
 public class SettingsActivity extends AppCompatActivity
 {
 
-  ActionBar actionBar;
-
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
@@ -24,7 +22,6 @@ public class SettingsActivity extends AppCompatActivity
       getFragmentManager().beginTransaction().add(android.R.id.content, fragment, fragment.getClass().getSimpleName())
           .commit();
     }
-    actionBar = getSupportActionBar();
   }
 
   @Override

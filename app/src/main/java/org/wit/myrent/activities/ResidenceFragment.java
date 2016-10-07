@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.wit.android.helpers.ContactHelper;
+import org.wit.android.helpers.IntentHelper;
 import org.wit.myrent.R;
 import org.wit.myrent.app.MyRentApp;
 import org.wit.myrent.models.Portfolio;
@@ -35,6 +36,7 @@ import static org.wit.android.helpers.ContactHelper.sendEmail;
 import static org.wit.android.helpers.IntentHelper.navigateUp;
 import static org.wit.android.helpers.IntentHelper.selectContact;
 
+import android.support.design.widget.FloatingActionButton;
 
 public class ResidenceFragment extends Fragment implements TextWatcher,
     OnCheckedChangeListener,
@@ -68,6 +70,7 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     app = MyRentApp.getApp();
     portfolio = app.portfolio;
     residence = portfolio.getResidence(resId);
+
   }
 
   @Override
@@ -77,6 +80,9 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
 
     addListeners(v);
     updateControls(residence);
+
+    FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
+    fab.setOnClickListener(this);
 
     return v;
   }
@@ -178,6 +184,9 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
         sendEmail(getActivity(), emailAddress, getString(R.string.residence_report_subject), residence.getResidenceReport(getActivity()));
         break;
 
+      case R.id.fab :
+        IntentHelper.openPreferredLocationInMap(getActivity(), residence.geolocation);
+        break;
     }
   }
 
