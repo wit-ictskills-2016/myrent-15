@@ -35,6 +35,7 @@ import android.widget.EditText;
 import static org.wit.android.helpers.ContactHelper.sendEmail;
 import static org.wit.android.helpers.IntentHelper.navigateUp;
 import static org.wit.android.helpers.IntentHelper.selectContact;
+import static org.wit.android.helpers.IntentHelper.startActivityWithData;
 
 import android.support.design.widget.FloatingActionButton;
 
@@ -185,8 +186,8 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
         break;
 
       case R.id.fab:
-        Intent mapIntent = new Intent(getActivity(), MapActivity.class);
-        startActivity(mapIntent);
+        startActivityWithData(getActivity(), MapActivity.class, EXTRA_RESIDENCE_ID, residence.id);
+
         break;
     }
   }

@@ -35,6 +35,13 @@ public class IntentHelper
     NavUtils.navigateUpTo(parent, upIntent);
   }
 
+  public static void navigateUp(Activity parent, String extraID, Serializable extraData)
+  {
+    Intent upIntent = NavUtils.getParentActivityIntent(parent);
+    upIntent.putExtra(extraID, extraData);
+    NavUtils.navigateUpTo(parent, upIntent);
+  }
+
   public static void selectContact(Activity parent, int id)
   {
     Intent selectContactIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
