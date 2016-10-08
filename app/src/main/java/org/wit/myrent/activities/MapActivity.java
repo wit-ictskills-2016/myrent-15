@@ -54,7 +54,6 @@ public class MapActivity extends AppCompatActivity
     this.map = map;
 
     map.setOnMarkerDragListener(this);
-    //map.setOnCameraChangeListener(this);
     map.setOnInfoWindowClickListener(this);
     map.setOnMarkerClickListener(this);
     map.setOnCameraIdleListener(this);
