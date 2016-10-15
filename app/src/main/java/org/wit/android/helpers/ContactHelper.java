@@ -1,5 +1,6 @@
 package org.wit.android.helpers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.util.Log;
 
 public class ContactHelper
 {
+
   public static String getDisplayName(Context context, Intent data)
   {
     String contact = "unable to find contact";
@@ -58,6 +60,17 @@ public class ContactHelper
     return email;
   }
 
+  /**
+   *
+   * @param parent Parent activity
+   * @param requestCode If greater or equal to zero this code will be returned on onActivityResult
+   */
+  public static void selectContact(Activity parent, int requestCode)
+  {
+    Intent selectContactIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+    parent.startActivityForResult(selectContactIntent, requestCode);
+  }
+
   public static String getContact(Context context, Intent data)
   {
     String contact = "unable to find contact";
@@ -83,5 +96,6 @@ public class ContactHelper
     emailIntent.putExtra(Intent.EXTRA_TEXT, body);
     context.startActivity(Intent.createChooser(emailIntent, "Sending Email"));
   }
+
 
 }

@@ -11,11 +11,16 @@ import org.wit.myrent.app.MyRentApp;
 import org.wit.myrent.models.Portfolio;
 import org.wit.myrent.models.Residence;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -34,8 +39,9 @@ import android.widget.EditText;
 
 import static org.wit.android.helpers.ContactHelper.sendEmail;
 import static org.wit.android.helpers.IntentHelper.navigateUp;
-import static org.wit.android.helpers.IntentHelper.selectContact;
+import static org.wit.android.helpers.ContactHelper.selectContact;
 import static org.wit.android.helpers.IntentHelper.startActivityWithData;
+import static org.wit.android.helpers.LogHelpers.info;
 
 import android.support.design.widget.FloatingActionButton;
 
@@ -47,6 +53,7 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   public static final String EXTRA_RESIDENCE_ID = "myrent.RESIDENCE_ID";
 
   private static final int REQUEST_CONTACT = 1;
+  public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 2;
 
   private EditText geolocation;
   private CheckBox rented;
@@ -139,6 +146,7 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     switch (requestCode)
     {
       case REQUEST_CONTACT:
+        checkContactsReadPermission();
         String name = ContactHelper.getContact(getActivity(), data);
         emailAddress = ContactHelper.getEmail(getActivity(), data);
         tenantButton.setText(name + " : " + emailAddress);
@@ -199,5 +207,60 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     Date date = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
     residence.date = date.getTime();
     dateButton.setText(residence.getDateString());
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    switch (requestCode) {
+      case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+          // permission was granted, yay! Do the
+          // contacts-related task you need to do.
+
+        } else {
+
+          // permission denied, boo! Disable the
+          // functionality that depends on this permission.
+        }
+        return;
+      }
+
+      // other 'case' lines to check for other
+      // permissions this app might request
+    }
+  }
+
+  public void checkContactsReadPermission() {
+    // Here, getActivity() is the current activity
+    if (ContextCompat.checkSelfPermission(getActivity(),
+        Manifest.permission.READ_CONTACTS)
+        != PackageManager.PERMISSION_GRANTED) {
+
+      // Should we show an explanation?
+      if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+          Manifest.permission.READ_CONTACTS)) {
+
+        // Show an expanation to the user *asynchronously* -- don't block
+        // this thread waiting for the user's response! After the user
+        // sees the explanation, try again to request the permission.
+        info(this, "shouldShowRequestPermissionRationale");
+
+      } else {
+
+        // No explanation needed, we can request the permission.
+
+        ActivityCompat.requestPermissions(getActivity(),
+            new String[]{Manifest.permission.READ_CONTACTS},
+            MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+        // app-defined int constant. The callback method gets the
+        // result of the request.
+      }
+    }
   }
 }

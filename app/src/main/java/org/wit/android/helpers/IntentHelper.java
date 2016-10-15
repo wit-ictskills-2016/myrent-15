@@ -42,12 +42,6 @@ public class IntentHelper
     NavUtils.navigateUpTo(parent, upIntent);
   }
 
-  public static void selectContact(Activity parent, int id)
-  {
-    Intent selectContactIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-    parent.startActivityForResult(selectContactIntent, id);
-  }
-
   public static void openPreferredLocationInMap(Activity parent, String location)
   {
     Uri geoLocation = Uri.parse("geo:0,0?").buildUpon().appendQueryParameter("q", location).build();
