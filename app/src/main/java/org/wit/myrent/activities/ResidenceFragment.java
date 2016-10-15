@@ -53,7 +53,6 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   public static final String EXTRA_RESIDENCE_ID = "myrent.RESIDENCE_ID";
 
   private static final int REQUEST_CONTACT = 1;
-  public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 2;
 
   private EditText geolocation;
   private CheckBox rented;
@@ -213,7 +212,7 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     switch (requestCode) {
-      case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+      case REQUEST_CONTACT: {
         // If request is cancelled, the result arrays are empty.
         if (grantResults.length > 0
             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -253,9 +252,10 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
 
         // No explanation needed, we can request the permission.
 
-        ActivityCompat.requestPermissions(getActivity(),
+        ActivityCompat.requestPermissions(
+            getActivity(),
             new String[]{Manifest.permission.READ_CONTACTS},
-            MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            REQUEST_CONTACT);
 
         // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
         // app-defined int constant. The callback method gets the
