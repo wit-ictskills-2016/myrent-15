@@ -177,7 +177,9 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
         break;
 
       case R.id.tenant :
-        selectContact(getActivity(), REQUEST_CONTACT);
+        //selectContact(getActivity(), REQUEST_CONTACT);
+        Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(i, REQUEST_CONTACT);
         break;
 
       case R.id.residence_reportButton :

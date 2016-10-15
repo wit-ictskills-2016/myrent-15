@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.content.ContentResolver;
+import android.util.Log;
 
 
 public class ContactHelper
@@ -51,6 +52,7 @@ public class ContactHelper
       }
       catch (Exception e)
       {
+        Log.d("MyRent", "ContactHelper.getMail failure : " + e.getMessage());
       }
     }
     return email;
