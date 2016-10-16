@@ -67,6 +67,8 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
 
   MyRentApp app;
 
+  Intent requestContactIntent;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -136,22 +138,28 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
 
 
   @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data)
-  {
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (resultCode != Activity.RESULT_OK) {
       return;
     }
 
-    switch (requestCode)
-    {
+    switch (requestCode) {
       case REQUEST_CONTACT:
+        requestContactIntent = data;
         checkContactsReadPermission();
-        String name = ContactHelper.getContact(getActivity(), data);
-        emailAddress = ContactHelper.getEmail(getActivity(), data);
-        tenantButton.setText(name + " : " + emailAddress);
-        residence.tenant = name;
+//        String name = ContactHelper.getContact(getActivity(), data);
+//        emailAddress = ContactHelper.getEmail(getActivity(), data);
+//        tenantButton.setText(name + " : " + emailAddress);
+//        residence.tenant = name;
         break;
     }
+  }
+
+  private void readContact() {
+    String name = ContactHelper.getContact(getActivity(), requestContactIntent);
+    emailAddress = ContactHelper.getEmail(getActivity(), requestContactIntent);
+    tenantButton.setText(name + " : " + emailAddress);
+    residence.tenant = name;
   }
 
   @Override
@@ -174,23 +182,24 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   }
 
   @Override
-  public void onClick(View v)
-  {
-    switch (v.getId())
-    {
-      case R.id.registration_date      : Calendar c = Calendar.getInstance();
-        DatePickerDialog dpd = new DatePickerDialog (getActivity(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+  public void onClick(View v) {
+    switch (v.getId()) {
+      case R.id.registration_date:
+        Calendar c = Calendar.getInstance();
+        DatePickerDialog dpd = new DatePickerDialog(getActivity(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         dpd.show();
         break;
 
-      case R.id.tenant :
+      case R.id.tenant:
         //selectContact(getActivity(), REQUEST_CONTACT);
         Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(i, REQUEST_CONTACT);
         break;
 
-      case R.id.residence_reportButton :
-        if(emailAddress == null) emailAddress = ""; // guard against null pointer
+      case R.id.residence_reportButton:
+        if (emailAddress == null) {
+          emailAddress = ""; // guard against null pointer
+        }
         sendEmail(getActivity(), emailAddress, getString(R.string.residence_report_subject), residence.getResidenceReport(getActivity()));
         break;
 
@@ -208,40 +217,38 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     dateButton.setText(residence.getDateString());
   }
 
+  /**
+   * http://stackoverflow.com/questions/32714787/android-m-permissions-onrequestpermissionsresult-not-being-called
+   * @param requestCode
+   * @param permissions
+   * @param grantResults
+   */
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     switch (requestCode) {
       case REQUEST_CONTACT: {
         // If request is cancelled, the result arrays are empty.
-        if (grantResults.length > 0
-            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-          // permission was granted, yay! Do the
-          // contacts-related task you need to do.
-
-        } else {
-
-          // permission denied, boo! Disable the
-          // functionality that depends on this permission.
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          readContact();
         }
         return;
       }
-
-      // other 'case' lines to check for other
-      // permissions this app might request
     }
   }
 
   public void checkContactsReadPermission() {
     if (ContextCompat.checkSelfPermission(getActivity(),
-        Manifest.permission.READ_CONTACTS)
-        != PackageManager.PERMISSION_GRANTED) {
-
-        ActivityCompat.requestPermissions(
-            getActivity(),
-            new String[]{Manifest.permission.READ_CONTACTS},
-            REQUEST_CONTACT);
-      }
+        Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+      readContact();
     }
+    else {
+      // Invoke callback to request user-granted permission
+      ActivityCompat.requestPermissions(
+          getActivity(),
+          new String[]{Manifest.permission.READ_CONTACTS},
+          REQUEST_CONTACT);
+    }
+  }
+
 }
