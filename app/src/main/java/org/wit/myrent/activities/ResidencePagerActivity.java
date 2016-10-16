@@ -1,9 +1,9 @@
 package org.wit.myrent.activities;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.app.Fragment;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -32,7 +32,7 @@ public class ResidencePagerActivity extends AppCompatActivity implements ViewPag
     viewPager.setId(R.id.viewPager);
     setContentView(viewPager);
     setResidenceList();
-    pagerAdapter = new PagerAdapter(getSupportFragmentManager(), residences);
+    pagerAdapter = new PagerAdapter(getFragmentManager(), residences);
     viewPager.setAdapter(pagerAdapter);
     viewPager.addOnPageChangeListener(this);
     setCurrentItem();
@@ -76,7 +76,7 @@ public class ResidencePagerActivity extends AppCompatActivity implements ViewPag
 
   }
 
-  class PagerAdapter extends FragmentStatePagerAdapter
+  class PagerAdapter extends FragmentPagerAdapter
   {
     private ArrayList<Residence> residences;
 

@@ -18,8 +18,10 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+//import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -219,9 +221,11 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
 
   /**
    * http://stackoverflow.com/questions/32714787/android-m-permissions-onrequestpermissionsresult-not-being-called
-   * @param requestCode
-   * @param permissions
-   * @param grantResults
+   * This is an override of FragmentCompat.onRequestPermissionsResult
+   * 
+   * @param requestCode Example REQUEST_CONTACT
+   * @param permissions String array of permissions requested.
+   * @param grantResults int array of results for permissions request.
    */
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -230,22 +234,30 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
       case REQUEST_CONTACT: {
         // If request is cancelled, the result arrays are empty.
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
           readContact();
         }
-        return;
+        break;
       }
     }
   }
 
-  public void checkContactsReadPermission() {
+  /**
+   * Bespoke method to check if read contacts permission exists.
+   * If it exists then the contact sought is read.
+   * Otherwise, the callback method FragmentCompat.request permissions is invoked and
+   * on its successfully being granted permission then the sought contact is read.
+   */
+  private void checkContactsReadPermission() {
     if (ContextCompat.checkSelfPermission(getActivity(),
         Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+
       readContact();
     }
     else {
       // Invoke callback to request user-granted permission
-      ActivityCompat.requestPermissions(
-          getActivity(),
+      FragmentCompat.requestPermissions(
+          this,
           new String[]{Manifest.permission.READ_CONTACTS},
           REQUEST_CONTACT);
     }
