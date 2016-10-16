@@ -3,14 +3,11 @@ package org.wit.myrent.activities;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import org.wit.android.helpers.ContactHelper;
-import org.wit.android.helpers.IntentHelper;
 import org.wit.myrent.R;
 import org.wit.myrent.app.MyRentApp;
 import org.wit.myrent.models.Portfolio;
 import org.wit.myrent.models.Residence;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -19,8 +16,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
-import android.support.v4.app.ActivityCompat;
-//import android.support.v4.app.Fragment;
 import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -38,13 +33,9 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
-
 import static org.wit.android.helpers.ContactHelper.sendEmail;
 import static org.wit.android.helpers.IntentHelper.navigateUp;
-import static org.wit.android.helpers.ContactHelper.selectContact;
 import static org.wit.android.helpers.IntentHelper.startActivityWithData;
-import static org.wit.android.helpers.LogHelpers.info;
-
 import android.support.design.widget.FloatingActionButton;
 
 public class ResidenceFragment extends Fragment implements TextWatcher,
@@ -149,10 +140,6 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
       case REQUEST_CONTACT:
         requestContactIntent = data;
         checkContactsReadPermission();
-//        String name = ContactHelper.getContact(getActivity(), data);
-//        emailAddress = ContactHelper.getEmail(getActivity(), data);
-//        tenantButton.setText(name + " : " + emailAddress);
-//        residence.tenant = name;
         break;
     }
   }
@@ -193,7 +180,6 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
         break;
 
       case R.id.tenant:
-        //selectContact(getActivity(), REQUEST_CONTACT);
         Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(i, REQUEST_CONTACT);
         break;
@@ -222,7 +208,7 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   /**
    * http://stackoverflow.com/questions/32714787/android-m-permissions-onrequestpermissionsresult-not-being-called
    * This is an override of FragmentCompat.onRequestPermissionsResult
-   * 
+   *
    * @param requestCode Example REQUEST_CONTACT
    * @param permissions String array of permissions requested.
    * @param grantResults int array of results for permissions request.
@@ -245,8 +231,9 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   /**
    * Bespoke method to check if read contacts permission exists.
    * If it exists then the contact sought is read.
-   * Otherwise, the callback method FragmentCompat.request permissions is invoked and
-   * on its successfully being granted permission then the sought contact is read.
+   * Otherwise, the method FragmentCompat.request permissions is invoked and
+   * The response is via the callback onRequestPermissionsResult.
+   * In onRequestPermissionsResult, on successfully being granted permission then the sought contact is read.
    */
   private void checkContactsReadPermission() {
     if (ContextCompat.checkSelfPermission(getActivity(),
