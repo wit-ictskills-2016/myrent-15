@@ -1,29 +1,26 @@
 package org.wit.myrent.app;
 
-import static org.wit.android.helpers.LogHelpers.info;
-
-import org.wit.myrent.models.Portfolio;
-import org.wit.myrent.models.PortfolioSerializer;
-
 import android.app.Application;
+import android.util.Log;
+import org.wit.myrent.models.Portfolio;
+
 
 public class MyRentApp extends Application
 {
-  private static final String FILENAME = "portfolio.json";
+  static final String TAG = "MyRentApp";
   public Portfolio portfolio;
-  protected static MyRentApp app;
 
+  protected static MyRentApp app;
   @Override
-  public void onCreate() {
+  public void onCreate()
+  {
     super.onCreate();
-    PortfolioSerializer serializer = new PortfolioSerializer(this, FILENAME);
-    portfolio = new Portfolio(serializer);
+    portfolio = new Portfolio(getApplicationContext());
+    Log.d(TAG, "MyRent app launched");
     app = this;
-    info(this, "MyRent app launched");
   }
 
   public static MyRentApp getApp(){
     return app;
   }
-
 }

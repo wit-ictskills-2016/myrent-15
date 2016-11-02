@@ -126,7 +126,7 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   @Override
   public void onPause() {
     super.onPause();
-    portfolio.saveResidences();
+    portfolio.updateResidence(residence);
   }
 
 
