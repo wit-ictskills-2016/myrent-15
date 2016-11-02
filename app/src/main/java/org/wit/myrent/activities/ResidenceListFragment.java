@@ -8,8 +8,12 @@ import org.wit.myrent.R;
 import org.wit.myrent.app.MyRentApp;
 import org.wit.myrent.models.Portfolio;
 import org.wit.myrent.models.Residence;
+import org.wit.myrent.settings.SettingsActivity;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.ActionMode;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -41,12 +45,14 @@ public class ResidenceListFragment extends ListFragment implements
     AbsListView.MultiChoiceModeListener,
     Callback<Residence>
 {
+  public static final String BROADCAST_ACTION = "org.wit.myrent.activities.ResidenceListFragment";
 
   private ArrayList<Residence> residences;
   private Portfolio portfolio;
   private ResidenceAdapter adapter;
   private ListView listView;
   MyRentApp app;
+  private IntentFilter intentFilter;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -70,8 +76,17 @@ public class ResidenceListFragment extends ListFragment implements
     listView = (ListView) v.findViewById(android.R.id.list);
     listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     listView.setMultiChoiceModeListener(this);
+    registerBroadcastReceiver();
 
     return v;
+  }
+
+  private void registerBroadcastReceiver()
+  {
+    intentFilter = new IntentFilter(BROADCAST_ACTION);
+    ResponseReceiver responseReceiver = new ResponseReceiver();
+    // Registers the ResponseReceiver and its intent filters
+    LocalBroadcastManager.getInstance(getActivity()).registerReceiver(responseReceiver, intentFilter);
   }
 
   @Override
@@ -109,6 +124,10 @@ public class ResidenceListFragment extends ListFragment implements
 
       case R.id.action_refresh:
         retrieveResidences();
+        return true;
+
+      case R.id.action_settings:
+        startActivity(new Intent(getActivity(), SettingsActivity.class));
         return true;
 
       default:
@@ -242,10 +261,12 @@ public class ResidenceListFragment extends ListFragment implements
   class ResidenceAdapter extends ArrayAdapter<Residence>
   {
     private Context context;
+    List<Residence> residences;
 
     public ResidenceAdapter(Context context, ArrayList<Residence> residences) {
       super(context, 0, residences);
       this.context = context;
+      this.residences = residences;
     }
 
     @SuppressLint("InflateParams")
@@ -267,6 +288,20 @@ public class ResidenceListFragment extends ListFragment implements
       rentedCheckBox.setChecked(res.rented);
 
       return convertView;
+    }
+  }
+
+  //Broadcast receiver for receiving status updates from the IntentService
+  private class ResponseReceiver extends BroadcastReceiver
+  {
+    //private void ResponseReceiver() {}
+    // Called when the BroadcastReceiver gets an Intent it's registered to receive
+    @Override
+    public void onReceive(Context context, Intent intent)
+    {
+      //refreshDonationList();
+      adapter.residences = app.portfolio.residences;
+      adapter.notifyDataSetChanged();
     }
   }
 }

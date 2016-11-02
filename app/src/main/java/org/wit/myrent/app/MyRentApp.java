@@ -1,6 +1,7 @@
 package org.wit.myrent.app;
 
 import android.app.Application;
+import android.content.Intent;
 import android.util.Log;
 
 import org.wit.myrent.models.Portfolio;
@@ -38,6 +39,11 @@ public class MyRentApp extends Application
         .build();
 
     residenceService = retrofit.create(ResidenceServiceProxy.class);
+
+    // This broadcast is designed to start the RefreshService with
+    // a view to sync the data cache with the remote server.
+    sendBroadcast(new Intent("org.wit.myrent.receivers.SEND_BROADCAST"));
+
   }
 
   public static MyRentApp getApp() {

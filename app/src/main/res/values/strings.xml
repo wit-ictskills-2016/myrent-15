@@ -31,6 +31,7 @@
   <string name="nmr_residences_summary">How many Residences to store locally?</string>
   <string name="set_refresh_interval">Refresh</string>
   <string name="set_refresh_interval_summary">Frequency of cloud updates (minutes)</string>
+  <string name="refresh_interval_preference_key">refresh_interval</string>
 
   <string name="refresh">Refresh Residence List</string>
 

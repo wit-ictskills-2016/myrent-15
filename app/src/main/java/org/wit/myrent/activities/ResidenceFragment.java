@@ -267,14 +267,19 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   @Override
   public void onResponse(Response<Residence> response, Retrofit retrofit) {
     Residence returnedResidence = response.body();
-    if (returnedResidence != null) {
-      Toast.makeText(getActivity(), "Residence updated successfully", Toast.LENGTH_SHORT).show();
-    }
-    else {
-      Toast.makeText(getActivity(), "Update failed. Residence null returned due to incorrectly configured client", Toast.LENGTH_SHORT).show();
+    try {
+      if (returnedResidence != null) {
+        Toast.makeText(getActivity(), "Residence updated successfully", Toast.LENGTH_SHORT).show();
+      }
+      else {
+        Toast.makeText(getActivity(), "Update failed. Residence null returned due to incorrectly configured client", Toast.LENGTH_SHORT).show();
 
+      }
+    } catch(Exception e) {
+      Log.d(TAG, e.getMessage());
     }
   }
+
 
   @Override
   public void onFailure(Throwable t) {
