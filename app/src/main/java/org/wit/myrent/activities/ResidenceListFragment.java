@@ -1,14 +1,15 @@
 package org.wit.myrent.activities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.wit.android.helpers.IntentHelper;
 import org.wit.myrent.R;
 import org.wit.myrent.app.MyRentApp;
 import org.wit.myrent.models.Portfolio;
 import org.wit.myrent.models.Residence;
-import org.wit.myrent.settings.SettingsActivity;
 
+import android.annotation.SuppressLint;
 import android.view.ActionMode;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -22,21 +23,30 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.CheckBox;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
-public class ResidenceListFragment extends ListFragment implements OnItemClickListener,
-    AbsListView.MultiChoiceModeListener
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+
+
+public class ResidenceListFragment extends ListFragment implements
+    OnItemClickListener,
+    AbsListView.MultiChoiceModeListener,
+    Callback<Residence>
 {
+
   private ArrayList<Residence> residences;
   private Portfolio portfolio;
   private ResidenceAdapter adapter;
-  MyRentApp app;
   private ListView listView;
+  MyRentApp app;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -90,14 +100,15 @@ public class ResidenceListFragment extends ListFragment implements OnItemClickLi
       case R.id.menu_item_new_residence:
         Residence residence = new Residence();
         portfolio.addResidence(residence);
+        createResidence(residence);
 
         Intent i = new Intent(getActivity(), ResidencePagerActivity.class);
         i.putExtra(ResidenceFragment.EXTRA_RESIDENCE_ID, residence.id);
         startActivityForResult(i, 0);
         return true;
 
-      case R.id.action_settings:
-        startActivity(new Intent(getActivity(), SettingsActivity.class));
+      case R.id.action_refresh:
+        retrieveResidences();
         return true;
 
       default:
@@ -111,10 +122,6 @@ public class ResidenceListFragment extends ListFragment implements OnItemClickLi
     IntentHelper.startActivityWithData(getActivity(), ResidencePagerActivity.class, "RESIDENCE_ID", residence.id);
   }
 
-  @Override
-  public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
-
-  }
   /* ************ MultiChoiceModeListener methods (begin) *********** */
   @Override
   public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -129,10 +136,8 @@ public class ResidenceListFragment extends ListFragment implements OnItemClickLi
   }
 
   @Override
-  public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem)
-  {
-    switch (menuItem.getItemId())
-    {
+  public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+    switch (menuItem.getItemId()) {
       case R.id.menu_item_delete_residence:
         deleteResidence(actionMode);
         return true;
@@ -142,13 +147,12 @@ public class ResidenceListFragment extends ListFragment implements OnItemClickLi
 
   }
 
-  private void deleteResidence(ActionMode actionMode)
-  {
-    for (int i = adapter.getCount() - 1; i >= 0; i--)
-    {
-      if (listView.isItemChecked(i))
-      {
-        portfolio.deleteResidence(adapter.getItem(i));
+  private void deleteResidence(ActionMode actionMode) {
+    for (int i = adapter.getCount() - 1; i >= 0; i--) {
+      if (listView.isItemChecked(i)) {
+        Residence residence = adapter.getItem(i);
+        portfolio.deleteResidence(residence);
+        deleteResidence(residence.id);
       }
     }
     actionMode.finish();
@@ -157,9 +161,83 @@ public class ResidenceListFragment extends ListFragment implements OnItemClickLi
 
   @Override
   public void onDestroyActionMode(ActionMode actionMode) {
+  }
+
+  @Override
+  public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked) {
+  }
+
+  /* ************ MultiChoiceModeListener methods (end) *********** */
+
+  /* ************ Retrofit: Create Residence ************ */
+
+  public void createResidence(Residence res) {
+    Call<Residence> call = app.residenceService.createResidence(res);
+    call.enqueue(this);
+  }
+
+  @Override
+  public void onResponse(Response<Residence> response, Retrofit retrofit) {
+    Residence returnedResidence = response.body();
+    if (returnedResidence != null) {
+      Toast.makeText(getActivity(), "Residence created successfully", Toast.LENGTH_SHORT).show();
+    }
+    else {
+      Toast.makeText(getActivity(), "Residence null returned due to incorrectly configured client", Toast.LENGTH_SHORT).show();
+
+    }
+  }
+
+  @Override
+  public void onFailure(Throwable t) {
+    Toast.makeText(getActivity(), "Failed to create residence due to unknown network issue", Toast.LENGTH_SHORT).show();
 
   }
-  /* ************ Residence Adapter *********** */
+  /* ************ Retrofit: Delete Residence ************ */
+
+  public void deleteResidence(Long id) {
+    DeleteRemoteResidence delResidence = new DeleteRemoteResidence();
+    Call<String> call = app.residenceService.deleteResidence(id);
+    call.enqueue(delResidence);
+  }
+  class DeleteRemoteResidence implements Callback<String>
+  {
+
+    @Override
+    public void onResponse(Response<String> response, Retrofit retrofit) {
+      Toast.makeText(getActivity(), "Residence deleted", Toast.LENGTH_SHORT).show();
+      adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFailure(Throwable t) {
+      Toast.makeText(getActivity(), "Failed to delete Residence due to unknown network issue", Toast.LENGTH_SHORT).show();
+    }
+  }
+
+  /* ************ Retrofit: Refresh Residence list ************ */
+
+  public void retrieveResidences() {
+    RetrieveResidences retrieveResidences = new RetrieveResidences();
+    Call<List<Residence>> call = app.residenceService.getResidences();
+    call.enqueue(retrieveResidences);
+  }
+
+  class RetrieveResidences implements Callback<List<Residence>>
+  {
+    @Override
+    public void onResponse(Response<List<Residence>> response, Retrofit retrofit) {
+      List<Residence> listRes = response.body();
+      Toast.makeText(getActivity(), "Retrieved " + listRes.size() + " residences", Toast.LENGTH_SHORT).show();
+      portfolio.refreshResidences(listRes);
+      ((ResidenceAdapter) getListAdapter()).notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFailure(Throwable t) {
+      Toast.makeText(getActivity(), "Failed to retrieve residence list", Toast.LENGTH_SHORT).show();
+    }
+  }
 
   class ResidenceAdapter extends ArrayAdapter<Residence>
   {

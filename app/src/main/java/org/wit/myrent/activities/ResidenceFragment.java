@@ -37,12 +37,20 @@ import static org.wit.android.helpers.ContactHelper.sendEmail;
 import static org.wit.android.helpers.IntentHelper.navigateUp;
 import static org.wit.android.helpers.IntentHelper.startActivityWithData;
 import android.support.design.widget.FloatingActionButton;
+import android.widget.Toast;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class ResidenceFragment extends Fragment implements TextWatcher,
     OnCheckedChangeListener,
     OnClickListener,
-    DatePickerDialog.OnDateSetListener
+    DatePickerDialog.OnDateSetListener,
+    Callback<Residence>
 {
+  static final String TAG = "MyRent";
   public static final String EXTRA_RESIDENCE_ID = "myrent.RESIDENCE_ID";
 
   private static final int REQUEST_CONTACT = 1;
@@ -126,6 +134,7 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   @Override
   public void onPause() {
     super.onPause();
+    updateResidence(residence);
     portfolio.updateResidence(residence);
   }
 
@@ -249,4 +258,27 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     }
   }
 
+  /* ============================ Retrofit =======================================*/
+  public void updateResidence(Residence res) {
+    Call<Residence> call = app.residenceService.updateResidence(res);
+    call.enqueue(this);
+  }
+
+  @Override
+  public void onResponse(Response<Residence> response, Retrofit retrofit) {
+    Residence returnedResidence = response.body();
+    if (returnedResidence != null) {
+      Toast.makeText(getActivity(), "Residence updated successfully", Toast.LENGTH_SHORT).show();
+    }
+    else {
+      Toast.makeText(getActivity(), "Update failed. Residence null returned due to incorrectly configured client", Toast.LENGTH_SHORT).show();
+
+    }
+  }
+
+  @Override
+  public void onFailure(Throwable t) {
+    Log.d(TAG,"Failed to update residence due to unknown network issue");
+
+  }
 }

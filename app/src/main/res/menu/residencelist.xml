@@ -8,6 +8,11 @@
         android:title="@string/new_residence"
         app:showAsAction="ifRoom|withText"/>
 
+  <item
+      android:id="@+id/action_refresh"
+      android:icon="@android:drawable/ic_menu_rotate"
+      app:showAsAction="always"
+      android:title="@string/refresh"/>
 
   <item
       android:id="@+id/action_settings"
