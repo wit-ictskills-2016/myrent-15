@@ -192,8 +192,7 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
         break;
 
       case R.id.fab:
-        startActivityWithData(getActivity(), MapActivity.class, EXTRA_RESIDENCE_ID, residence.id);
-
+        startActivityWithData(getActivity(), MapBoxActivity.class, EXTRA_RESIDENCE_ID, residence.id);
         break;
     }
   }
