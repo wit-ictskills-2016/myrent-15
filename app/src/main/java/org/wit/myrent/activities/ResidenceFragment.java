@@ -44,16 +44,21 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+import static org.wit.android.helpers.CameraHelper.showPhoto;
+import android.widget.ImageView;
+
 public class ResidenceFragment extends Fragment implements TextWatcher,
     OnCheckedChangeListener,
     OnClickListener,
     DatePickerDialog.OnDateSetListener,
-    Callback<Residence>
+    Callback<Residence>,
+    View.OnLongClickListener
 {
   static final String TAG = "MyRent";
   public static final String EXTRA_RESIDENCE_ID = "myrent.RESIDENCE_ID";
 
   private static final int REQUEST_CONTACT = 1;
+  private static final int REQUEST_PHOTO = 0;
 
   private EditText geolocation;
   private CheckBox rented;
@@ -69,6 +74,9 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   MyRentApp app;
 
   Intent requestContactIntent;
+
+  private ImageView cameraButton;
+  private ImageView photoView;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -111,12 +119,18 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     tenantButton.setOnClickListener(this);
     reportButton.setOnClickListener(this);
 
+    cameraButton  = (ImageView) v.findViewById(R.id.camera_button);
+    photoView     = (ImageView) v.findViewById(R.id.myrent_imageView);
+
   }
 
   public void updateControls(Residence residence) {
     geolocation.setText(residence.geolocation);
     rented.setChecked(residence.rented);
     dateButton.setText(residence.getDateString());
+
+    cameraButton.setOnClickListener(this);
+    photoView.setOnLongClickListener(this);
   }
 
   @Override
@@ -149,6 +163,15 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
       case REQUEST_CONTACT:
         requestContactIntent = data;
         checkContactsReadPermission();
+        break;
+
+      case REQUEST_PHOTO:
+        String filename = data.getStringExtra(ResidenceCameraActivity.EXTRA_PHOTO_FILENAME);
+        if (filename != null)
+        {
+          residence.photo = filename;
+          showPhoto(getActivity(), residence, photoView );
+        }
         break;
     }
   }
@@ -203,6 +226,10 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
       case R.id.fab:
         startActivityWithData(getActivity(), MapBoxActivity.class, EXTRA_RESIDENCE_ID, residence.id);
         break;
+
+      case R.id.camera_button:
+        Intent ic = new Intent(getActivity(), ResidenceCameraActivity.class);
+        startActivityForResult(ic, REQUEST_PHOTO);
     }
   }
 
@@ -285,5 +312,26 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   public void onFailure(Throwable t) {
     Log.d(TAG,"Failed to update residence due to unknown network issue");
 
+  }
+
+  // Camera feature
+  @Override
+  public void onStart()
+  {
+    super.onStart();
+    //display thumbnail photo
+    showPhoto(getActivity(), residence, photoView);
+  }
+
+  /**
+   * Long press the thumbnail bitmap image to view photo in single-photo gallery
+   */
+  @Override
+  public boolean onLongClick(View v)
+  {
+    Intent i = new Intent(getActivity(), ResidenceGalleryActivity.class);
+    i.putExtra(EXTRA_RESIDENCE_ID, residence.id);
+    startActivity(i);
+    return true;
   }
 }

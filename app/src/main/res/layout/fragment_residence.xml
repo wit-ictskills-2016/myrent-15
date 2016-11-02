@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical" >
 
   <!-- LOCATION -->
@@ -14,20 +13,42 @@
 
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="51dp"
       android:baselineAligned="false"
-      android:orientation="horizontal" >
+      android:orientation="horizontal"
+      android:weightSum="1">
 
     <!-- Geolocation (GPS Coords) -->
 
     <EditText
         android:id="@+id/geolocation"
-        android:layout_width="match_parent"
+        android:layout_width="194dp"
         android:layout_height="wrap_content"
-        android:hint="@string/geolocation_hint" >
+        android:hint="@string/geolocation_hint"
+        android:layout_weight="0.75">
 
       <requestFocus />
     </EditText>
+
+    <!-- Camera button + thumbnail-->
+    <ImageButton
+        android:id="@+id/camera_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerInside"
+        android:layout_marginTop="16dp"
+        android:src="@android:drawable/ic_menu_camera"
+        android:layout_gravity="top"/>
+    <ImageView
+        android:id="@+id/myrent_imageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerInside"
+        android:background="@android:color/darker_gray"
+        android:cropToPadding="true"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"/>
 
   </LinearLayout>
 
@@ -66,8 +87,7 @@
           android:layout_height="wrap_content"
           android:layout_marginLeft="16dp"
           android:layout_marginRight="16dp"
-          android:text="@string/residence_report"
-      />
+          android:text="@string/residence_report"/>
 
   <android.support.design.widget.FloatingActionButton
       android:id="@+id/fab"
@@ -76,5 +96,4 @@
       android:layout_gravity="bottom|end"
       android:layout_margin="@dimen/fab_margin"
       android:src="@drawable/ic_blue_marker"/>
-
 </LinearLayout>

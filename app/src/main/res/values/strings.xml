@@ -35,4 +35,7 @@
 
   <string name="refresh">Refresh Residence List</string>
 
+  <string name="take_photo">Take Photo</string>
+  <string name="save_photo">Save Photo</string>
+
 </resources>
