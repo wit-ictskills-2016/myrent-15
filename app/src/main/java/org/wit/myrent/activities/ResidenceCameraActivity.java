@@ -2,6 +2,7 @@ package org.wit.myrent.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -71,6 +72,13 @@ public class ResidenceCameraActivity extends AppCompatActivity implements View.O
 
   public void onTakePhotoClicked(View v)
   {
+    // Check for presence of device camera. If not present advise user and quit method.
+    PackageManager pm = getPackageManager();
+    if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+      Toast.makeText(this, "Camera app not present on this device", Toast.LENGTH_SHORT).show();
+      return;
+    }
+    // The device has a camera app ... so use it.
     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
     startActivityForResult(cameraIntent,CAMERA_RESULT);
     savePhoto.setEnabled(true);
@@ -98,7 +106,14 @@ public class ResidenceCameraActivity extends AppCompatActivity implements View.O
     super.onActivityResult(requestCode, resultCode, data);
     switch (requestCode)
     {
-      case ResidenceCameraActivity.CAMERA_RESULT    : processImage(data);
+      case ResidenceCameraActivity.CAMERA_RESULT :
+        if(data != null) {
+          processImage(data);
+        }
+        else {
+          Toast.makeText(this, "Camera failure: check simulated camera present emulator advanced settings",
+                                Toast.LENGTH_LONG).show();
+        }
         break;
     }
   }
