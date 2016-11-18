@@ -114,12 +114,12 @@ public class ResidenceListFragment extends ListFragment implements
     switch (item.getItemId()) {
       case R.id.menu_item_new_residence:
         Residence residence = new Residence();
-        portfolio.addResidence(residence);
+        //portfolio.addResidence(residence);
         createResidence(residence);
 
-        Intent i = new Intent(getActivity(), ResidencePagerActivity.class);
-        i.putExtra(ResidenceFragment.EXTRA_RESIDENCE_ID, residence.id);
-        startActivityForResult(i, 0);
+//        Intent i = new Intent(getActivity(), ResidencePagerActivity.class);
+//        i.putExtra(ResidenceFragment.EXTRA_RESIDENCE_ID, residence.id);
+//        startActivityForResult(i, 0);
         return true;
 
       case R.id.action_refresh:
@@ -197,9 +197,14 @@ public class ResidenceListFragment extends ListFragment implements
 
   @Override
   public void onResponse(Response<Residence> response, Retrofit retrofit) {
-    Residence returnedResidence = response.body();
-    if (returnedResidence != null) {
+    Residence res = response.body();
+    if (res != null) {
       Toast.makeText(getActivity(), "Residence created successfully", Toast.LENGTH_SHORT).show();
+
+      portfolio.addResidence(res);
+      Intent i = new Intent(getActivity(), ResidencePagerActivity.class);
+      i.putExtra(ResidenceFragment.EXTRA_RESIDENCE_ID, res.id);
+      startActivityForResult(i, 0);
     }
     else {
       Toast.makeText(getActivity(), "Residence null returned due to incorrectly configured client", Toast.LENGTH_SHORT).show();
