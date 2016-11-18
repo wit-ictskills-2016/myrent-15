@@ -5,7 +5,6 @@ import android.content.Context;
 import org.wit.myrent.R;
 
 import java.util.Date;
-import java.util.Random;
 
 
 public class Residence
@@ -22,7 +21,6 @@ public class Residence
   public String photo;
 
   public Residence() {
-    id = unsignedLong();
     date = new Date().getTime();
     geolocation = "52.253456,-7.187162";
     tenant = "none presently";
@@ -68,15 +66,4 @@ public class Residence
 
   }
 
-  /**
-   * Generate a long greater than zero
-   * @return Unsigned Long value greater than zero
-   */
-  private Long unsignedLong() {
-    long rndVal = 0;
-    do {
-      rndVal = new Random().nextLong();
-    } while (rndVal <= 0);
-    return rndVal;
-  }
 }
