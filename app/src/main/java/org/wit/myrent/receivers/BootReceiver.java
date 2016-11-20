@@ -13,11 +13,13 @@ import org.wit.myrent.R;
 import org.wit.myrent.services.RefreshService;
 
 /**
- * If permission set and BootReceiver registered in manifest file ...
- * and application manually launched, then...
+ * Method 1: If permission set and BootReceiver registered in manifest file then
  * BootReceiver.onReceive method will be invoked by system when device started.
- * In this method we set the interval at which the alarm should trigger.
- * This will be either a default or a value input by user in preference settings.
+ * Method 2: Create bespoke intent filter action in BootReceiver receiver in manifest and 
+ * broadcast an intent from MyApp with this action as parameter. This is approach used
+ * in our code for easier debugging into BootReceiver.
+ * In this onReceive method we set the interval at which the alarm should trigger.
+ * This will be either a default value or a value input by user in preference settings.
  * Note that the system units are milliseconds. Even AlarmManager.INTERVAL_FIFTEEN_MINUTES
  * resolves to milliseconds. The user input frequency units is minutes.
  * Debugging has proved impossible using BOOT_COMPLETED action (see manifest).
