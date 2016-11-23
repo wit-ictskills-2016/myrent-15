@@ -19,7 +19,7 @@ public class MyRentApp extends Application
   static final String TAG = "MyRent";
   //public String service_url = "http://10.0.2.2:9000"; // Android Emulator
   //public String service_url = "http://10.0.3.2:9000"; // Genymotion
-  public String service_url = "https://myrent-service-2016.herokuapp.com/";
+  public String service_url = "https://myrent-service-2016.herokuapp.com";
 
   public Portfolio portfolio;
   protected static MyRentApp app;

@@ -10,13 +10,12 @@ public class FileIOHelper
 {
   public static boolean write(Context context, String filename, byte[] data)
   {
-    FileOutputStream os = null;
+    FileOutputStream outputStream = null;
     boolean success = true;
     try
     {
-      //os = getActivity().openFileOutput(filename, Context.MODE_PRIVATE);
-      os = context.openFileOutput(filename, Context.MODE_PRIVATE);
-      os.write(data);
+      outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
+      outputStream.write(data);
     }
     catch (Exception e)
     {
@@ -27,8 +26,8 @@ public class FileIOHelper
     {
       try
       {
-        if (os != null)
-          os.close();
+        if (outputStream != null)
+          outputStream.close();
       }
       catch (Exception e)
       {
